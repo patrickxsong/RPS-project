@@ -72,14 +72,14 @@ function userSelect(e) {
     playRound(userPlay,computerPlay());
 
     if (userScore == 5) {
-        alert("Great job! You Win!");
+        alert("You scored 5 points. Great job! You Win!");
         userScore = 0;
         cpuScore = 0;
         gameMessage = "Game Over";
     }
 
     if (cpuScore == 5) {
-        alert("Computer wins! Better luck next time!");
+        alert("Computer scored 5 points. Computer wins! Better luck next time.");
         userScore = 0;
         cpuScore = 0;
         gameMessage = "Game Over";
