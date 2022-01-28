@@ -4,74 +4,100 @@ const computerPlay = () => choices[Math.floor(Math.random()*3)];
 
 const proper = string => string[0].toUpperCase() + string.slice(1).toLowerCase();
 
+let userScore = 0;
+let cpuScore = 0;
+let gameMessage;
+
 const playRound = (playerSelection, computerSelection) => {
     
-    if (playerSelection.toLowerCase() === "rock") {
+    let cpuPick = `Computer picks ${computerSelection}`;
+    let cpuWin = `${cpuPick}. ${computerSelection} beats ${proper(playerSelection)}. You lose!`;
+    let userWin = `${cpuPick}. ${proper(playerSelection)} beats ${computerSelection}. You win!`;
+
+    if (playerSelection === "rock") {
         if (computerSelection === "Paper") {
-            return 'lose';
+            gameMessage = cpuWin;
+            cpuScore++;
         } else if (computerSelection === "Scissors") {
-            return 'win';
-        } else return 'tie';
+            gameMessage = userWin;
+            userScore++;
+            console.log(cpuScore);
+        } else gameMessage = `${cpuPick}. Tie game!`;
     }
 
-    if (playerSelection.toLowerCase() === "paper") {
+    if (playerSelection === "paper") {
         if (computerSelection === "Paper") {
-            return 'tie';
+            gameMessage = `${cpuPick}. Tie game!`;
         } else if (computerSelection === "Scissors") {
-            return 'lose';
-        } else return 'win';
-    }
-
-    if (playerSelection.toLowerCase() === "scissors") {
-        if (computerSelection === "Paper") {
-            return 'win';
-        } else if (computerSelection === "Scissors") {
-            return 'tie';
-        } else return 'lose';
-    }
-}
-
-
-
-const game = () => {
-    let playerScore = 0;
-    let computerScore = 0;
-    let streak = false;
-
-    for (let i = 0; i < 5; i++) {
-        let playerSelection = (prompt("Your turn! Select ROCK, PAPER, or SCISSORS:")); 
-        const computerSelection = computerPlay();
-
-        playerSelection = proper(playerSelection);
-        
-        if (playRound(playerSelection, computerSelection) === 'lose') {
-            streak = false;
-            computerScore++;
-            console.log(`You lose! ${computerSelection} beats ${playerSelection}`);
-        } else if (playRound(playerSelection, computerSelection) === 'win' && streak) {
-            playerScore++;
-            console.log(`Wow pretty good! You win! ${playerSelection} beats ${computerSelection}`)
-        }
-        else if (playRound(playerSelection, computerSelection) === 'win') {
-            streak = true;
-            playerScore++;
-            console.log(`You win! ${playerSelection} beats ${computerSelection}`);
+            gameMessage = cpuWin;
+            cpuScore++;
         } else {
-            streak = false;
-            console.log('Tie Game');
+            gameMessage = userWin;
+            userScore++;
         }
     }
 
-    let score = `User: ${playerScore} Computer: ${computerScore}.`;
-
-    if (playerScore > computerScore) {
-        console.log(`${score} You win!`);
-    } else if (playerScore < computerScore) {
-        console.log(`${score} Computer wins!`);
-    } else {
-        console.log(`${score} Tie game.`);
-    } 
+    if (playerSelection === "scissors") {
+        if (computerSelection === "Paper") {
+            gameMessage = userWin;
+            userScore++;
+        } else if (computerSelection === "Scissors") {
+            gameMessage = `${cpuPick}. Tie game!`;
+        } else {
+            gameMessage = cpuWin;
+            cpuScore++;
+        }
+    }
 };
 
 
-game();
+const userDiv = document.querySelector(".user-score");
+
+const userScoreDiv = document.createElement('div');
+userScoreDiv.textContent = userScore;
+userDiv.appendChild(userScoreDiv);
+
+const cpuDiv = document.querySelector(".cpu-score");
+
+const cpuScoreDiv = document.createElement('div');
+cpuScoreDiv.textContent = cpuScore;
+cpuDiv.appendChild(cpuScoreDiv);
+
+const spacer = document.querySelector(".spacer");
+const docMessage = document.createElement('div');
+
+function userSelect(e) {
+
+    const userPlay = `${this.id}`
+    playRound(userPlay,computerPlay());
+
+    if (userScore == 5) {
+        alert("Great job! You Win!");
+        userScore = 0;
+        cpuScore = 0;
+        gameMessage = "Game Over";
+    }
+
+    if (cpuScore == 5) {
+        alert("Computer wins! Better luck next time!");
+        userScore = 0;
+        cpuScore = 0;
+        gameMessage = "Game Over";
+    }
+
+    docMessage.textContent = gameMessage;
+    spacer.appendChild(docMessage);
+    userScoreDiv.textContent = userScore;
+    userDiv.appendChild(userScoreDiv);
+
+    cpuScoreDiv.textContent = cpuScore;
+    cpuDiv.appendChild(cpuScoreDiv);
+    
+}
+
+const buttons = document.querySelectorAll('button');
+
+buttons.forEach(button => button.addEventListener("click", userSelect));
+
+
+
